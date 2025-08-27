@@ -23,19 +23,20 @@ public class EmailService {
         try {
             // For now, let's just log what we would send
             // We'll add real AWS SES integration next
-            
-            String subject = "Welcome to Our Platform!";
+
+            String subject = "Welcome to Our Platform, " + emailEvent.getFirstName() + "!";
             String body = String.format(
-                "Hi %s,\n\n" +
-                "Welcome to our platform! Your account has been successfully created.\n\n" +
-                "User ID: %s\n" +
-                "Email: %s\n\n" +
-                "Thank you for joining us!\n\n" +
-                "Best regards,\n" +
-                "The Team",
-                emailEvent.getFirstName(),
-                emailEvent.getUserId(),
-                emailEvent.getEmail()
+                    "Dear %s,\n\n" +
+                            "Thank you for creating your account with us.\n\n" +
+                            "Your registration details:\n" +
+                            "• User ID: %s\n" +
+                            "• Email: %s\n\n" +
+                            "If you have questions, please contact our support team.\n\n" +
+                            "Regards,\n" +
+                            "Customer Support Team",
+                    emailEvent.getFirstName(),
+                    emailEvent.getUserId(),
+                    emailEvent.getEmail()
             );
             
             // Display the email details (for testing)
