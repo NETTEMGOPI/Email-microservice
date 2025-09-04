@@ -60,25 +60,82 @@ public class CompanyEmailService {
 
     private void sendAdminNotificationEmail(CompanyEvent companyEvent) {
         try {
-            String subject = "New Company Submission - " + companyEvent.getCompanyName();
-            String body = buildAdminEmailBody(companyEvent);
+            String subject = "🔔 New Business Inquiry - " + companyEvent.getCompanyName();
+            String htmlBody = buildAdminEmailBody(companyEvent);
+            String textBody = buildAdminTextEmailBody(companyEvent); // We'll create this fallback
 
             System.out.println("=".repeat(60));
-            System.out.println("SENDING ADMIN NOTIFICATION:");
+            System.out.println("📧 SENDING ADMIN NOTIFICATION:");
             System.out.println("To: " + adminEmail);
             System.out.println("From: " + fromEmail);
             System.out.println("Subject: " + subject);
-            System.out.println("Body:");
-            System.out.println(body);
+            System.out.println("Format: HTML + Text fallback");
             System.out.println("=".repeat(60));
 
-            // Send via AWS SES
-            sendViaAwsSes(adminEmail, subject, body, "ADMIN");
+            // Use HTML email method instead of plain text
+            sendHtmlEmailViaAwsSes(adminEmail, subject, htmlBody, textBody, "ADMIN");
 
         } catch (Exception e) {
-            System.err.println("Error sending admin notification: " + e.getMessage());
+            System.err.println("❌ Error sending admin notification: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private String buildAdminTextEmailBody(CompanyEvent companyEvent) {
+        return String.format(
+                "NEW BUSINESS INQUIRY NOTIFICATION\n" +
+                        "=================================\n\n" +
+                        "URGENT: Customer expects contact within 2-3 business days\n\n" +
+                        "SUBMISSION DETAILS\n" +
+                        "==================\n" +
+                        "Submission ID: %s\n" +
+                        "Received: %s\n" +
+                        "Source: Website Contact Form\n\n" +
+                        "COMPANY INFORMATION\n" +
+                        "===================\n" +
+                        "Company Name: %s\n" +
+                        "DBA: %s\n" +
+                        "Website: %s\n\n" +
+                        "BUSINESS ADDRESS\n" +
+                        "================\n" +
+                        "Street 1: %s\n" +
+                        "Street 2: %s\n" +
+                        "City: %s\n" +
+                        "State: %s\n" +
+                        "ZIP Code: %s\n" +
+                        "Country: %s\n\n" +
+                        "PRIMARY CONTACT\n" +
+                        "===============\n" +
+                        "Name: %s\n" +
+                        "Title: %s\n" +
+                        "Email: %s\n" +
+                        "Phone: %s\n\n" +
+                        "RECOMMENDED ACTIONS\n" +
+                        "===================\n" +
+                        "- Assign to business development representative\n" +
+                        "- Research company background\n" +
+                        "- Schedule discovery call within 48 hours\n" +
+                        "- Add to CRM system\n" +
+                        "- Prepare relevant materials\n\n" +
+                        "---\n" +
+                        "Mimosa Networks - Business Development System\n" +
+                        "Automated notification | Do not reply",
+                companyEvent.getCompanyId(),
+                companyEvent.getSubmissionTime(),
+                companyEvent.getCompanyName(),
+                companyEvent.getDba() != null ? companyEvent.getDba() : "Not provided",
+                companyEvent.getCompanyUrl() != null ? companyEvent.getCompanyUrl() : "Not provided",
+                companyEvent.getStreet1(),
+                companyEvent.getStreet2() != null ? companyEvent.getStreet2() : "Not provided",
+                companyEvent.getCity(),
+                companyEvent.getState(),
+                companyEvent.getZipCode(),
+                companyEvent.getCountry(),
+                companyEvent.getContactName(),
+                companyEvent.getContactTitle(),
+                companyEvent.getContactEmail(),
+                companyEvent.getContactPhone()
+        );
     }
 
     private String buildCustomerEmailBody(CompanyEvent companyEvent) {
