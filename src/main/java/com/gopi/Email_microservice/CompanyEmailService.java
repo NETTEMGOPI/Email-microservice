@@ -182,6 +182,50 @@ public class CompanyEmailService {
         );
     }
 
+    private void sendHtmlEmailViaAwsSes(String toEmail, String subject, String htmlBody, String textBody, String emailType) {
+        try {
+            // Initialize SES client if not already done
+            if (sesClient == null) {
+                sesClient = SesClient.builder()
+                        .region(Region.of(awsRegion))
+                        .credentialsProvider(DefaultCredentialsProvider.create())
+                        .build();
+            }
+
+            // Create the email request with both HTML and text versions
+            SendEmailRequest emailRequest = SendEmailRequest.builder()
+                    .source(fromEmail)
+                    .destination(Destination.builder()
+                            .toAddresses(toEmail)
+                            .build())
+                    .message(Message.builder()
+                            .subject(Content.builder().data(subject).build())
+                            .body(Body.builder()
+                                    .html(Content.builder().data(htmlBody).build())  // HTML version
+                                    .text(Content.builder().data(textBody).build())  // Text fallback
+                                    .build())
+                            .build())
+                    .build();
+
+            // Send the email
+            SendEmailResponse response = sesClient.sendEmail(emailRequest);
+
+            System.out.println("✅ Enhanced " + emailType + " email sent via AWS SES!");
+            System.out.println("📧 Message ID: " + response.messageId());
+            System.out.println("🎨 Format: HTML with CSS animations + Text fallback");
+
+        } catch (Exception e) {
+            System.err.println("⚠️ AWS SES error occurred for " + emailType + " email:");
+            System.err.println("   Error: " + e.getMessage());
+            System.err.println("   This could be due to:");
+            System.err.println("   - Recipient email not verified in SES Sandbox mode");
+            System.err.println("   - Region mismatch");
+            System.err.println("   - Permission issues");
+            System.err.println("   Email content displayed above shows what would be sent");
+        }
+    }
+
+    // Add this method to your CompanyEmailService class:
     private void sendViaAwsSes(String toEmail, String subject, String body, String emailType) {
         try {
             // Initialize SES client if not already done
@@ -192,7 +236,7 @@ public class CompanyEmailService {
                         .build();
             }
 
-            // Create the email request
+            // Create simple text email request
             SendEmailRequest emailRequest = SendEmailRequest.builder()
                     .source(fromEmail)
                     .destination(Destination.builder()
@@ -209,16 +253,17 @@ public class CompanyEmailService {
             // Send the email
             SendEmailResponse response = sesClient.sendEmail(emailRequest);
 
-            System.out.println("Email sent via AWS SES! Type: " + emailType + ", Message ID: " + response.messageId());
+            System.out.println("✅ " + emailType + " email sent via AWS SES!");
+            System.out.println("📧 Message ID: " + response.messageId());
+            System.out.println("📝 Format: Plain text");
 
         } catch (Exception e) {
-            System.err.println("AWS SES error occurred for " + emailType + " email:");
+            System.err.println("⚠️ AWS SES error occurred for " + emailType + " email:");
             System.err.println("   Error: " + e.getMessage());
             System.err.println("   This could be due to:");
             System.err.println("   - Recipient email not verified in SES Sandbox mode");
             System.err.println("   - Region mismatch");
             System.err.println("   - Permission issues");
-            System.err.println("   Email content displayed above shows what would be sent");
         }
     }
 }
