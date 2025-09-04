@@ -37,23 +37,23 @@ public class CompanyEmailService {
 
     private void sendCustomerAcknowledgmentEmail(CompanyEvent companyEvent) {
         try {
-            String subject = "Company Information Received - " + companyEvent.getCompanyName();
-            String body = buildCustomerEmailBody(companyEvent);
+            String subject = "🎉 Welcome! Your submission has been received";
+            String htmlBody = buildEnhancedCustomerEmailBody(companyEvent);
+            String textBody = buildSimpleCustomerEmailBody(companyEvent);
 
             System.out.println("=".repeat(60));
-            System.out.println("SENDING CUSTOMER ACKNOWLEDGMENT:");
+            System.out.println("📧 SENDING ENHANCED CUSTOMER ACKNOWLEDGMENT:");
             System.out.println("To: " + companyEvent.getContactEmail());
             System.out.println("From: " + fromEmail);
             System.out.println("Subject: " + subject);
-            System.out.println("Body:");
-            System.out.println(body);
+            System.out.println("Format: HTML with animations + Text fallback");
             System.out.println("=".repeat(60));
 
-            // Send via AWS SES
-            sendViaAwsSes(companyEvent.getContactEmail(), subject, body, "CUSTOMER");
+            // Send HTML email via AWS SES (NOT sendViaAwsSes!)
+            sendHtmlEmailViaAwsSes(companyEvent.getContactEmail(), subject, htmlBody, textBody, "CUSTOMER");
 
         } catch (Exception e) {
-            System.err.println("Error sending customer acknowledgment: " + e.getMessage());
+            System.err.println("❌ Error sending customer acknowledgment: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -265,5 +265,134 @@ public class CompanyEmailService {
             System.err.println("   - Region mismatch");
             System.err.println("   - Permission issues");
         }
+    }
+
+    private String buildEnhancedCustomerEmailBody(CompanyEvent companyEvent) {
+        return String.format("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                @keyframes float-down {
+                    0%% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+                    50%% { opacity: 1; }
+                    100%% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .celebration {
+                    position: relative; overflow: hidden;
+                    background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
+                    padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 30px;
+                }
+                .flower {
+                    position: absolute; font-size: 25px; animation: float-down 4s linear infinite;
+                    pointer-events: none;
+                }
+                .flower:nth-child(1) { left: 10%%; animation-delay: 0s; }
+                .flower:nth-child(2) { left: 20%%; animation-delay: 0.5s; }
+                .flower:nth-child(3) { left: 30%%; animation-delay: 1s; }
+                .flower:nth-child(4) { left: 40%%; animation-delay: 1.5s; }
+                .flower:nth-child(5) { left: 50%%; animation-delay: 2s; }
+                .flower:nth-child(6) { left: 60%%; animation-delay: 2.5s; }
+                .flower:nth-child(7) { left: 70%%; animation-delay: 3s; }
+                .flower:nth-child(8) { left: 80%%; animation-delay: 3.5s; }
+                .flower:nth-child(9) { left: 90%%; animation-delay: 4s; }
+                .email-container {
+                    max-width: 600px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif;
+                    line-height: 1.6; color: #333; background: #ffffff;
+                }
+                .header-title {
+                    color: white; font-size: 32px; font-weight: bold; margin: 20px 0 10px 0;
+                    animation: fadeIn 1s ease-out;
+                }
+                .header-subtitle {
+                    color: rgba(255,255,255,0.9); font-size: 18px; margin: 0;
+                    animation: fadeIn 1s ease-out 0.5s both;
+                }
+                .checkmark {
+                    display: inline-block; width: 60px; height: 60px; background: #4CAF50;
+                    border-radius: 50%%; margin: 20px 0; position: relative;
+                    animation: fadeIn 1s ease-out 1s both;
+                }
+                .checkmark:after {
+                    content: ''; position: absolute; left: 22px; top: 18px;
+                    width: 8px; height: 16px; border: solid white;
+                    border-width: 0 3px 3px 0; transform: rotate(45deg);
+                }
+                .content {
+                    padding: 30px; background: white; border-radius: 10px;
+                    margin-top: -20px; position: relative; z-index: 10;
+                }
+                .message { 
+                    font-size: 18px; text-align: center; margin: 30px 0; 
+                    animation: fadeIn 1s ease-out 1.5s both; 
+                }
+                .highlight-box {
+                    background: linear-gradient(135deg, #f8f9ff 0%%, #e8f2ff 100%%);
+                    border-left: 4px solid #4f46e5; padding: 20px; margin: 30px 0;
+                    border-radius: 5px; animation: fadeIn 1s ease-out 2s both;
+                }
+                .footer {
+                    text-align: center; padding: 30px; color: #666; font-size: 14px;
+                    border-top: 1px solid #eee; animation: fadeIn 1s ease-out 2.5s both;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="celebration">
+                    <div class="flower">🌸</div><div class="flower">🌺</div><div class="flower">🌻</div>
+                    <div class="flower">🌷</div><div class="flower">🌹</div><div class="flower">🌼</div>
+                    <div class="flower">💐</div><div class="flower">🌸</div><div class="flower">🌺</div>
+                    
+                    <h1 class="header-title">🎉 Congratulations!</h1>
+                    <p class="header-subtitle">Your submission has been received successfully</p>
+                    <div class="checkmark"></div>
+                </div>
+                
+                <div class="content">
+                    <div class="message">
+                        <h2>Dear %s,</h2>
+                        <p>Thank you for choosing our platform! We're excited to welcome you to our community.</p>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h3>🚀 What happens next?</h3>
+                        <p>Our dedicated team will review your information and reach out to you within <strong>2-3 business days</strong> with personalized recommendations and next steps.</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <p style="font-size: 18px; color: #4f46e5; font-weight: bold;">
+                            Thank you for trusting us with your business!
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p>© 2025 Your Company Name. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """, companyEvent.getContactName());
+    }
+
+    private String buildSimpleCustomerEmailBody(CompanyEvent companyEvent) {
+        return String.format(
+                "🎉 CONGRATULATIONS!\n\n" +
+                        "Dear %s,\n\n" +
+                        "Thank you for choosing our platform! We're excited to welcome you to our community.\n\n" +
+                        "WHAT HAPPENS NEXT?\n" +
+                        "==================\n" +
+                        "Our dedicated team will review your information and reach out to you within 2-3 business days with personalized recommendations and next steps.\n\n" +
+                        "Thank you for trusting us with your business!\n\n" +
+                        "Best regards,\n" +
+                        "The Team",
+                companyEvent.getContactName()
+        );
     }
 }
