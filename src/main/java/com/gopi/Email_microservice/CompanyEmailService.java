@@ -129,48 +129,157 @@ public class CompanyEmailService {
     }
 
     private String buildAdminEmailBody(CompanyEvent companyEvent) {
-        return String.format(
-                "NEW COMPANY SUBMISSION ALERT\n" +
-                        "============================\n\n" +
-                        "A new company has submitted their information through the system.\n\n" +
-                        "SUBMISSION DETAILS\n" +
-                        "==================\n" +
-                        "Submission ID: %s\n" +
-                        "Submission Time: %s\n" +
-                        "Event Type: %s\n\n" +
-                        "COMPANY INFORMATION\n" +
-                        "===================\n" +
-                        "Company Name: %s\n" +
-                        "DBA: %s\n" +
-                        "Website: %s\n\n" +
-                        "ADDRESS INFORMATION\n" +
-                        "===================\n" +
-                        "Street 1: %s\n" +
-                        "Street 2: %s\n" +
-                        "City: %s\n" +
-                        "State: %s\n" +
-                        "ZIP Code: %s\n" +
-                        "Country: %s\n\n" +
-                        "CONTACT INFORMATION\n" +
-                        "===================\n" +
-                        "Name: %s\n" +
-                        "Title: %s\n" +
-                        "Email: %s\n" +
-                        "Phone: %s\n\n" +
-                        "ACTION REQUIRED\n" +
-                        "===============\n" +
-                        "Please review this submission and follow up as necessary.\n" +
-                        "The customer expects contact within 2-3 business days.\n\n" +
-                        "System Administrator\n" +
-                        "Automated Notification System",
+        return String.format("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Business Inquiry - Mimosa Networks</title>
+            <style>
+                body { margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                .email-container { max-width: 700px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #dc2626 0%%, #ef4444 100%%); padding: 25px; text-align: center; border-radius: 8px 8px 0 0; }
+                .alert-badge { background: #ffffff; color: #dc2626; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+                .header-title { color: #ffffff; font-size: 22px; font-weight: 600; margin: 0 0 5px 0; }
+                .header-subtitle { color: rgba(255,255,255,0.9); font-size: 14px; margin: 0; }
+                .content { padding: 30px; }
+                .priority-section { background: #fef2f2; border-left: 4px solid #dc2626; padding: 20px; margin-bottom: 25px; border-radius: 0 6px 6px 0; }
+                .priority-section h3 { margin: 0 0 10px 0; color: #dc2626; font-size: 16px; }
+                .submission-meta { background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 25px; font-size: 13px; color: #6b7280; }
+                .data-table { width: 100%%; border-collapse: collapse; margin: 20px 0; }
+                .data-table th { background: #1e3a8a; color: white; padding: 12px; text-align: left; font-weight: 600; font-size: 14px; }
+                .data-table td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+                .data-table tr:nth-child(even) { background: #f9fafb; }
+                .category-header { background: #3b82f6 !important; color: white !important; font-weight: bold; text-align: center; }
+                .field-name { font-weight: 600; color: #374151; width: 180px; }
+                .field-value { color: #1f2937; }
+                .empty-value { color: #9ca3af; font-style: italic; }
+                .action-section { background: #f0f9ff; border: 1px solid #bae6fd; padding: 20px; border-radius: 6px; margin: 25px 0; }
+                .action-section h3 { color: #0369a1; margin: 0 0 15px 0; }
+                .action-list { margin: 10px 0; padding-left: 0; }
+                .action-list li { list-style: none; margin-bottom: 8px; padding-left: 20px; position: relative; color: #374151; }
+                .action-list li:before { content: "▶"; color: #3b82f6; position: absolute; left: 0; }
+                .footer { background: #f9fafb; padding: 20px 30px; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb; }
+                .system-info { color: #6b7280; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <div class="alert-badge">NEW SUBMISSION</div>
+                    <h1 class="header-title">Business Inquiry Notification</h1>
+                    <p class="header-subtitle">Immediate Review Required</p>
+                </div>
+                
+                <div class="content">
+                    <div class="priority-section">
+                        <h3>Action Required</h3>
+                        <p>A new business inquiry has been submitted through the company website. Customer expects contact within 2-3 business days.</p>
+                    </div>
+                    
+                    <div class="submission-meta">
+                        <strong>Submission ID:</strong> %s | 
+                        <strong>Received:</strong> %s | 
+                        <strong>Source:</strong> Website Contact Form
+                    </div>
+                    
+                    <table class="data-table">
+                        <tr class="category-header">
+                            <td colspan="2">COMPANY INFORMATION</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Company Name</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">DBA (Doing Business As)</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Website</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        
+                        <tr class="category-header">
+                            <td colspan="2">BUSINESS ADDRESS</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Street Address 1</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Street Address 2</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">City</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">State/Province</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">ZIP/Postal Code</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Country</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        
+                        <tr class="category-header">
+                            <td colspan="2">PRIMARY CONTACT</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Contact Name</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Job Title</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Email Address</td>
+                            <td class="field-value"><strong>%s</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">Phone Number</td>
+                            <td class="field-value">%s</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="action-section">
+                        <h3>Recommended Next Steps</h3>
+                        <ul class="action-list">
+                            <li>Assign to appropriate business development representative</li>
+                            <li>Research company background and potential requirements</li>
+                            <li>Schedule initial discovery call within 48 hours</li>
+                            <li>Add contact information to CRM system</li>
+                            <li>Prepare relevant product materials and case studies</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <div class="system-info">
+                        <strong>Mimosa Networks - Business Development System</strong><br>
+                        Automated notification | Do not reply to this email<br>
+                        For system issues contact: it-support@mimosanetworks.com
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        """,
                 companyEvent.getCompanyId(),
                 companyEvent.getSubmissionTime(),
-                companyEvent.getEventType(),
                 companyEvent.getCompanyName(),
-                companyEvent.getDba() != null ? companyEvent.getDba() : "N/A",
-                companyEvent.getCompanyUrl() != null ? companyEvent.getCompanyUrl() : "N/A",
+                companyEvent.getDba() != null && !companyEvent.getDba().isEmpty() ? companyEvent.getDba() : "<span class='empty-value'>Not provided</span>",
+                companyEvent.getCompanyUrl() != null && !companyEvent.getCompanyUrl().isEmpty() ? companyEvent.getCompanyUrl() : "<span class='empty-value'>Not provided</span>",
                 companyEvent.getStreet1(),
-                companyEvent.getStreet2() != null ? companyEvent.getStreet2() : "N/A",
+                companyEvent.getStreet2() != null && !companyEvent.getStreet2().isEmpty() ? companyEvent.getStreet2() : "<span class='empty-value'>Not provided</span>",
                 companyEvent.getCity(),
                 companyEvent.getState(),
                 companyEvent.getZipCode(),
