@@ -273,88 +273,102 @@ public class CompanyEmailService {
         <html>
         <head>
             <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Submission Confirmation - Mimosa Networks</title>
             <style>
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(30px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .email-container {
-                    max-width: 500px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif;
-                    line-height: 1.6; color: #333; background: #ffffff;
-                }
-                .celebration {
-                    background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
-                    padding: 30px 20px; text-align: center; border-radius: 10px; margin-bottom: 20px;
-                }
-                .header-title {
-                    color: white; font-size: 28px; font-weight: bold; margin: 10px 0;
-                    animation: fadeIn 1s ease-out;
-                }
-                .header-subtitle {
-                    color: rgba(255,255,255,0.9); font-size: 16px; margin: 0;
-                    animation: fadeIn 1s ease-out 0.3s both;
-                }
-                .checkmark {
-                    display: inline-block; width: 50px; height: 50px; background: #4CAF50;
-                    border-radius: 50%%; margin: 15px 0 0 0; position: relative;
-                    animation: fadeIn 1s ease-out 0.6s both;
-                }
-                .checkmark:after {
-                    content: ''; position: absolute; left: 18px; top: 14px;
-                    width: 6px; height: 12px; border: solid white;
-                    border-width: 0 2px 2px 0; transform: rotate(45deg);
-                }
-                .content {
-                    padding: 25px; background: white; border-radius: 10px;
-                    margin-top: -10px; position: relative; z-index: 10;
-                }
-                .message { 
-                    font-size: 16px; text-align: center; margin: 20px 0; 
-                    animation: fadeIn 1s ease-out 0.9s both; 
-                }
-                .highlight-box {
-                    background: linear-gradient(135deg, #f8f9ff 0%%, #e8f2ff 100%%);
-                    border-left: 4px solid #4f46e5; padding: 15px; margin: 20px 0;
-                    border-radius: 5px; animation: fadeIn 1s ease-out 1.2s both;
-                }
-                .thank-you {
-                    text-align: center; margin-top: 30px;
-                    animation: fadeIn 1s ease-out 1.5s both;
-                }
-                .footer {
-                    text-align: center; padding: 20px; color: #666; font-size: 12px;
-                    border-top: 1px solid #eee; animation: fadeIn 1s ease-out 1.8s both;
-                }
+                body { margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                .email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #1e3a8a 0%%, #3b82f6 100%%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+                .logo-placeholder { background: #ffffff; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: inline-block; }
+                .logo-text { color: #1e3a8a; font-size: 24px; font-weight: bold; margin: 0; }
+                .header-title { color: #ffffff; font-size: 24px; font-weight: 600; margin: 0 0 8px 0; }
+                .header-subtitle { color: rgba(255,255,255,0.9); font-size: 16px; margin: 0; }
+                .content { padding: 40px 30px; }
+                .greeting { font-size: 18px; color: #1f2937; margin-bottom: 20px; }
+                .message { font-size: 16px; line-height: 1.6; color: #4b5563; margin-bottom: 30px; }
+                .info-box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 20px; margin: 25px 0; border-radius: 0 6px 6px 0; }
+                .info-box h3 { margin: 0 0 10px 0; color: #1e3a8a; font-size: 18px; }
+                .info-box p { margin: 0; color: #4b5563; line-height: 1.5; }
+                .next-steps { background: #fefefe; border: 1px solid #e5e7eb; padding: 25px; border-radius: 6px; margin: 30px 0; }
+                .next-steps h3 { color: #1e3a8a; margin: 0 0 15px 0; font-size: 18px; }
+                .next-steps ul { margin: 10px 0; padding-left: 20px; color: #4b5563; }
+                .next-steps li { margin-bottom: 8px; }
+                .contact-section { margin: 30px 0; padding: 20px; background: #f9fafb; border-radius: 6px; }
+                .contact-section h4 { color: #1e3a8a; margin: 0 0 10px 0; }
+                .contact-info { color: #6b7280; font-size: 14px; line-height: 1.5; }
+                .footer { background: #f9fafb; padding: 25px 30px; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb; }
+                .company-info { color: #6b7280; font-size: 13px; line-height: 1.4; margin-bottom: 15px; }
+                .legal-links { text-align: center; margin-top: 20px; }
+                .legal-links a { color: #6b7280; text-decoration: none; font-size: 12px; margin: 0 10px; }
+                .legal-links a:hover { color: #3b82f6; text-decoration: underline; }
+                .unsubscribe { text-align: center; margin-top: 15px; font-size: 11px; color: #9ca3af; }
             </style>
         </head>
         <body>
             <div class="email-container">
-                <div class="celebration">
-                    <h1 class="header-title">🎉 Congratulations!</h1>
-                    <p class="header-subtitle">Your submission has been received successfully</p>
-                    <div class="checkmark"></div>
+                <div class="header">
+                    <div class="logo-placeholder">
+                        <div class="logo-text">MIMOSA NETWORKS</div>
+                    </div>
+                    <h1 class="header-title">Submission Confirmation</h1>
+                    <p class="header-subtitle">Your business information has been received</p>
                 </div>
                 
                 <div class="content">
+                    <div class="greeting">Dear %s,</div>
+                    
                     <div class="message">
-                        <h2>Dear %s,</h2>
-                        <p>Thank you for choosing our platform! We're excited to welcome you to our community.</p>
+                        Thank you for submitting your business information to Mimosa Networks. We have successfully received your submission and our team will review the details provided.
                     </div>
                     
-                    <div class="highlight-box">
-                        <h3>🚀 What happens next?</h3>
-                        <p>Our dedicated team will review your information and reach out to you within <strong>2-3 business days</strong> with personalized recommendations and next steps.</p>
+                    <div class="info-box">
+                        <h3>What happens next?</h3>
+                        <p>Our business development team will review your submission and contact you within <strong>2-3 business days</strong> to discuss your requirements and potential partnership opportunities.</p>
                     </div>
                     
-                    <div class="thank-you">
-                        <p style="font-size: 16px; color: #4f46e5; font-weight: bold;">
-                            Thank you for trusting us with your business!
-                        </p>
+                    <div class="next-steps">
+                        <h3>In the meantime:</h3>
+                        <ul>
+                            <li>Review our product documentation and case studies on our website</li>
+                            <li>Prepare any specific technical requirements or questions</li>
+                            <li>Consider your implementation timeline and budget parameters</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="contact-section">
+                        <h4>Questions or Urgent Matters?</h4>
+                        <div class="contact-info">
+                            Business Development: <strong>bd@mimosanetworks.com</strong><br>
+                            Technical Support: <strong>support@mimosanetworks.com</strong><br>
+                            Phone: <strong>+1 (555) 123-4567</strong><br>
+                            Business Hours: Monday - Friday, 8:00 AM - 6:00 PM PST
+                        </div>
+                    </div>
+                    
+                    <div class="message">
+                        We appreciate your interest in Mimosa Networks and look forward to exploring how our solutions can support your business objectives.
                     </div>
                 </div>
                 
                 <div class="footer">
-                    <p>© 2025 Your Company Name. All rights reserved.</p>
+                    <div class="company-info">
+                        <strong>Mimosa Networks</strong><br>
+                        1234 Technology Drive, Suite 100<br>
+                        San Jose, CA 95110, United States<br>
+                        Phone: +1 (555) 123-4567 | Web: www.mimosanetworks.com
+                    </div>
+                    
+                    <div class="legal-links">
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Service</a>
+                        <a href="#security">Security</a>
+                        <a href="#contact">Contact Us</a>
+                    </div>
+                    
+                    <div class="unsubscribe">
+                        You received this email because you submitted a business inquiry through our website.<br>
+                        To unsubscribe from future communications, <a href="#unsubscribe" style="color: #6b7280;">click here</a>.
+                    </div>
                 </div>
             </div>
         </body>
